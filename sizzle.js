@@ -206,7 +206,7 @@ try {
 	slice = function( i ) {
 		var elem,
 			results = [];
-		for ( ; (elem = this[i]); i++ ) {
+		for ( ; (elem = this[ i++ ]); ) {
 			results.push( elem );
 		}
 		return results;
@@ -247,13 +247,11 @@ function Sizzle( selector, context, results, seed ) {
 					} else {
 						return results;
 					}
-				} else {
-					// Context is not a document
-					if ( context.ownerDocument && (elem = context.ownerDocument.getElementById( m )) &&
+				// Context is not a document
+				} else if ( context.ownerDocument && (elem = context.ownerDocument.getElementById( m )) &&
 						contains( context, elem ) && elem.id === m ) {
-						results.push( elem );
-						return results;
-					}
+					results.push( elem );
+					return results;
 				}
 
 			// Speed-up: Sizzle("TAG")
@@ -328,7 +326,7 @@ getText = Sizzle.getText = function( elem ) {
 
 	if ( !nodeType ) {
 		// If no nodeType, this is expected to be an array
-		for ( ; (node = elem[i]); i++ ) {
+		for ( ; (node = elem[ i++ ]); ) {
 			// Do not traverse comment nodes
 			ret += getText( node );
 		}
@@ -337,11 +335,10 @@ getText = Sizzle.getText = function( elem ) {
 		// innerText usage removed for consistency of new lines (see #11153)
 		if ( typeof elem.textContent === "string" ) {
 			return elem.textContent;
-		} else {
-			// Traverse its children
-			for ( elem = elem.firstChild; elem; elem = elem.nextSibling ) {
-				ret += getText( elem );
-			}
+		}
+		// Traverse its children
+		for ( elem = elem.firstChild; elem; elem = elem.nextSibling ) {
+			ret += getText( elem );
 		}
 	} else if ( nodeType === 3 || nodeType === 4 ) {
 		return elem.nodeValue;
@@ -455,7 +452,7 @@ Expr = Sizzle.selectors = {
 
 				// Filter out possible comments
 				if ( tag === "*" ) {
-					for ( ; (elem = results[i]); i++ ) {
+					for ( ; (elem = results[ i++ ]); ) {
 						if ( elem.nodeType === 1 ) {
 							tmp.push( elem );
 						}
@@ -994,15 +991,15 @@ baseHasDuplicate = !hasDuplicate;
 
 // Document sorting and removing duplicates
 Sizzle.uniqueSort = function( results ) {
-	var elem,
-		duplicates = [],
-		i = 1,
-		j = 0;
 
 	hasDuplicate = baseHasDuplicate;
 	results.sort( sortOrder );
 
 	if ( hasDuplicate ) {
+		var elem,
+			duplicates = [],
+			i = 1,
+			j = 0;
 		for ( ; (elem = results[i]); i++ ) {
 			if ( elem === results[ i - 1 ] ) {
 				j = duplicates.push( i );
@@ -1442,8 +1439,8 @@ compile = Sizzle.compile = function( selector, group /* Internal Use Only */ ) {
 function multipleContexts( selector, contexts, results ) {
 	var i = 0,
 		len = contexts.length;
-	for ( ; i < len; i++ ) {
-		Sizzle( selector, contexts[i], results );
+	for ( ; i < len; ) {
+		Sizzle( selector, contexts[ i++ ], results );
 	}
 	return results;
 }
